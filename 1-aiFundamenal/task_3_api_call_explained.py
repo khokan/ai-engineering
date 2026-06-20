@@ -12,9 +12,10 @@ load_dotenv()
 
 # Initialize client
 client = openai.OpenAI(
-    api_key=os.getenv("OPENAI_API_KEY"),
-    base_url=os.getenv("OPENAI_API_BASE")
+    api_key=os.getenv("OPENROUTER_API_KEY"),
+    base_url=os.getenv("OPENROUTER_API_BASE")
 )
+
 
 # ==========================================
 # UNDERSTANDING THE API CALL STRUCTURE
@@ -33,7 +34,7 @@ client = openai.OpenAI(
 # Then uncomment ALL lines (remove the # symbols) and fill in the blanks:
 
 response = client.chat.completions.create(
-    model="gpt-4.1-mini",  # TODO: Use "gpt-4.1-mini" - which AI model to use
+    model="openai/gpt-oss-120b:free",  # TODO: Use "gpt-4.1-mini" - which AI model to use
     messages=[
         {
             "role": "user",     # TODO: Use "user" - you're the user speaking

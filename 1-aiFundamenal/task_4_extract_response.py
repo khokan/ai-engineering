@@ -11,13 +11,13 @@ import os
 load_dotenv()
 
 client = openai.OpenAI(
-    api_key=os.getenv("OPENAI_API_KEY"),
-    base_url=os.getenv("OPENAI_API_BASE")
+    api_key=os.getenv("OPENROUTER_API_KEY"),
+    base_url=os.getenv("OPENROUTER_API_BASE")
 )
 
 # Make a simple API call to get a response
 response = client.chat.completions.create(
-    model="gpt-4.1-mini",
+    model="openai/gpt-oss-120b:free",
     messages=[{"role": "user", "content": "What is Python in one sentence?"}]
 )
 

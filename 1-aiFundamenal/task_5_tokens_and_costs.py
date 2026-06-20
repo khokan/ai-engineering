@@ -11,14 +11,14 @@ import os
 load_dotenv()
 
 client = openai.OpenAI(
-    api_key=os.getenv("OPENAI_API_KEY"),
-    base_url=os.getenv("OPENAI_API_BASE")
+     api_key=os.getenv("OPENROUTER_API_KEY"),
+    base_url=os.getenv("OPENROUTER_API_BASE")
 )
 
 # Make an API call with a business-relevant prompt
 prompt = "Explain the benefits of using AI for customer support in a business"
 response = client.chat.completions.create(
-    model="gpt-4.1-mini",
+    model="openai/gpt-oss-120b:free",
     messages=[{"role": "user", "content": prompt}]
 )
 
