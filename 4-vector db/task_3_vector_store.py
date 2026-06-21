@@ -108,7 +108,10 @@ def main():
                 print(f"   Source: {results[0].metadata.get('source', 'unknown')}")
     finally:
         if 'vectorstore' in locals():
-            vectorstore._client.reset()
+            try:
+                vectorstore._client.close()
+            except Exception:
+                pass
         shutil.rmtree(temp_dir, ignore_errors=True)
 
     # Key insights

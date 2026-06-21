@@ -111,7 +111,10 @@ def build_search_engine():
             status = "✅" if found_topic else "❌"
             print(f"{status} '{query}' → Found: {expected_topic}")
 
-        vectorstore._client.reset()
+        try:
+            vectorstore._client.close()
+        except Exception:
+            pass
 
     # Key achievements
     print("\n🏆 What You've Achieved:")

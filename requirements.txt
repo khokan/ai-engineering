@@ -2,3 +2,5 @@ chromadb
 sentence-transformers
 langchain-text-splitters
 numpy
+langchain_community
+langchain_huggingface
