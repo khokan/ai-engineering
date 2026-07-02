@@ -13,7 +13,8 @@ print("📄 Task 2: Smart Document Processing")
 print("=" * 50)
 
 # Initialize components from Task 1
-client = chromadb.PersistentClient(path="./chroma_db")
+script_dir = Path(__file__).parent
+client = chromadb.PersistentClient(path=str(script_dir / "chroma_db"))
 collection = client.get_or_create_collection("techcorp_rag")
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
@@ -51,10 +52,40 @@ def smart_chunk_document(text, overlap_ratio=0.2):
     return chunks
 
 # Process documents
-doc_dir = Path("./techcorp-docs")
+script_dir = Path(__file__).parent
+doc_dir = script_dir / "techcorp-docs"
 total_chunks = 0
 docs_processed = 0
 
+# First, process top-level markdown files
+print(f"\n📂 Processing root documents:")
+for doc_file in doc_dir.glob("*.md"):
+    metadata = {
+        "source": doc_file.name,
+        "section": "root"
+    }
+    
+    with open(doc_file, "r", encoding="utf-8") as f:
+        content = f.read()
+    
+    chunks = smart_chunk_document(content)
+    
+    for i, chunk in enumerate(chunks):
+        chunk_id = f"root_{doc_file.stem}_chunk_{i}"
+        embedding = model.encode(chunk).tolist()
+        
+        collection.add(
+            ids=[chunk_id],
+            embeddings=[embedding],
+            documents=[chunk],
+            metadatas=[metadata]
+        )
+        total_chunks += 1
+    
+    docs_processed += 1
+    print(f"   ✅ {doc_file.name}: {len(chunks)} chunks")
+
+# Then, process subdirectories
 for category_dir in doc_dir.iterdir():
     if category_dir.is_dir():
         print(f"\n📂 Processing {category_dir.name}:")
@@ -98,8 +129,9 @@ print(f"   - Collection size: {collection.count()}")
 print("=" * 50)
 
 # Create marker file
-os.makedirs("/root/markers", exist_ok=True)
-with open("/root/markers/task2_processing_complete.txt", "w") as f:
+markers_dir = Path(__file__).parent.parent.parent / "markers"
+markers_dir.mkdir(parents=True, exist_ok=True)
+with open(markers_dir / "task2_processing_complete.txt", "w") as f:
     f.write(f"TASK2_COMPLETE:DOCS={docs_processed},CHUNKS={total_chunks}")
 
 print("\n💡 Smart chunking preserves context for better generation!")

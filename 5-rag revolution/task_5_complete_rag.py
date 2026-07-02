@@ -5,6 +5,7 @@ Wire everything together - Retrieve, Augment, Generate!
 """
 
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 import chromadb
 from sentence_transformers import SentenceTransformer
@@ -16,7 +17,8 @@ print("🚀 Task 5: Complete RAG Pipeline")
 print("=" * 50)
 
 # Initialize all components
-client_db = chromadb.PersistentClient(path="./chroma_db")
+script_dir = Path(__file__).parent
+client_db = chromadb.PersistentClient(path=str(script_dir / "chroma_db"))
 collection = client_db.get_or_create_collection("techcorp_rag")
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
@@ -82,7 +84,7 @@ If the answer is not in the context, say: 'I don't have that information in the 
     # Hint: Use system_prompt and user_prompt
     messages = [
         {"role": "system", "content": system_prompt},  # Replace ___ with system_prompt
-        {"role": "user", "content": unique_sources}     # Replace ___ with user_prompt
+        {"role": "user", "content": user_prompt}     # Replace ___ with user_prompt
     ]
 
     response = client_llm.invoke(messages)
@@ -93,7 +95,7 @@ If the answer is not in the context, say: 'I don't have that information in the 
     sources = [meta['source'] for meta in metadatas]
     unique_sources = list(set(sources))
 
-    final_response = f"{answer}\n\n📎 Sources: {', '.join(___)}"  # Replace ___ with unique_sources
+    final_response = f"{answer}\n\n📎 Sources: {', '.join(unique_sources)}"  # Replace ___ with unique_sources
 
     return final_response
 
